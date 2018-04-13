@@ -6,6 +6,7 @@ from flask import Flask
 from flask import render_template, request
 from flask_restful import Api, Resource
 from multiprocessing import Process, Pipe
+from backend import main, new_person
 
 PUBLIC = False
 
@@ -15,8 +16,7 @@ pipe, card_listener = Pipe()
 
 
 def start_card_listener():
-    Process(target=lambda x: x.send("undefined"), args=(pipe,)).start()
-    # card listener returns "undefined" or id
+    Process(target=lambda x: x.send(main()), args=(pipe,)).start()
 
 
 class CardData(Resource):
@@ -37,7 +37,7 @@ api.add_resource(CardData, '/card-data')
 def index():
     if request.method == 'POST':
         post_request = request.form['name']
-        # save name
+        new_person(uid, post_request)  # FIXME uh oh
         error = "Successfully registered " + post_request
         return render_template('index.html', error=error)
     else:
