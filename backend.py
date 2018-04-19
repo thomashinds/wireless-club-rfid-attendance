@@ -1,5 +1,5 @@
 import serial, io, json
-from time import time
+import datetime
 
 ser = serial.Serial('/dev/ttyUSB0', 9600)
 
@@ -22,7 +22,7 @@ def main():
 
     id = ser.readline().decode("utf-8")[:-2]  # trim the newline character
     if id in people:
-        people[id]["times"].append(time())
+        people[id]["times"].append(datetime.datetime())
         save(people)
         return {"name": people[id]["name"], "uid": id, "recognized": "yes"}
 
@@ -44,7 +44,7 @@ def new_person(id, name):  # add a new person to the file w/ name, id, and time
         save(people)
 
     people[id] = {"name": name,
-                  "times": [time()]
+                  "times": [datetime.datetime()]
                   }
     save(people)
 
@@ -62,6 +62,9 @@ def load():
     except json.decoder.JSONDecodeError:
         return {}  # unreadable file
 
-
+def list_names_by_day(timecode):
+	
+		
+		
 if __name__ == "__main__":
     main()
