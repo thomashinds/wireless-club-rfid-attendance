@@ -60,8 +60,8 @@ nfc_connstring_8 = nfc_connstring * NFC_MAX_DEVICES
 
 class Nfc:
     def __init__(self):
-        self.context: ctypes.c_void_p = ctypes.c_void_p(None)
-        self.in_use: bool = False
+        self.context = ctypes.c_void_p(None)
+        self.in_use = False
         self.device = None
 
     def __enter__(self):
@@ -80,10 +80,10 @@ class Nfc:
     def get_devices(self) -> List[str]:
         # Create buffer in format that libnfc wants, call into it
         devs_buf = nfc_connstring_8()
-        count: int = libnfc.nfc_list_devices(self.context, devs_buf,
+        count = libnfc.nfc_list_devices(self.context, devs_buf,
                                              NFC_MAX_DEVICES)
         # Convert result to python types
-        devs_list: List[str] = []
+        devs_list = []
         for i in range(count):
             devs_list.append(devs_buf[i].value.decode('utf-8'))
         return devs_list
@@ -111,7 +111,7 @@ class Nfc:
         while tags[i] is not None:
             uid_str = libfreefare.freefare_get_tag_uid(tags[i])
             uids.append(int(uid_str, 16))
-        libfreefare.freefare_free_tags(tags)
+            libfreefare.freefare_free_tags(tags)
         return uids
 
 
