@@ -118,8 +118,13 @@ class Nfc:
 if __name__ == "__main__":
     import time
     with Nfc() as nfc:
-        print(nfc.get_devices())
-        nfc.select_device("don't know yet")
+        devices = nfc.get_devices()
+        print("Found NFC hardware:", devices)
+        if len(devices) == 0:
+            print("No NFC hardware found!")
+            raise SystemExit()
+        print("Using: ", devices[0])
+        nfc.select_device(devices[0])
         while True:
             print(nfc.poll_uids())
-            time.sleep(0.1)
+            time.sleep(0.5)
