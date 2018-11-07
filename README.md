@@ -2,8 +2,19 @@
 
 Some description here.
 
-## Running ##
+## Usage ##
 
-```bash
-$ python3 -m wc_attendance
+```
+usage: python3 -m wc_attendance [-h] {attendance,register} ...
+
+Wireless Club RFID Attendance
+
+positional arguments:
+  {attendance,register}
+                        Attendance Modes
+    attendance          Log attendance
+    register            Register new people
+
+optional arguments:
+  -h, --help            show this help message and exit
 ```
