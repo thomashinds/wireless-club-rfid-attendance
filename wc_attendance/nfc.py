@@ -1,7 +1,7 @@
 import logging
 import ctypes
 from ctypes.util import find_library
-from typing import List
+from typing import List, Set
 
 from .data_store import CardUid
 
@@ -98,7 +98,7 @@ class Nfc:
         if self.device is None:
             raise Exception("Failed to open device")
 
-    def poll_uids(self) -> List[CardUid]:
+    def poll_uids(self) -> Set[CardUid]:
         if not self.in_use:
             raise Exception("Enter context first")
         if self.device is None:
@@ -113,19 +113,4 @@ class Nfc:
             uids.append(int(uid_str, 16))
             i += 1
         libfreefare.freefare_free_tags(tags)
-        return uids
-
-
-if __name__ == "__main__":
-    import time
-    with Nfc() as nfc:
-        devices = nfc.get_devices()
-        print("Found NFC hardware:", devices)
-        if len(devices) == 0:
-            print("No NFC hardware found!")
-            raise SystemExit()
-        print("Using: ", devices[0])
-        nfc.select_device(devices[0])
-        while True:
-            print(nfc.poll_uids())
-            time.sleep(0.5)
+        return set(uids)
