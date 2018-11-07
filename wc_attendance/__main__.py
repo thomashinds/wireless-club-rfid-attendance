@@ -85,6 +85,9 @@ if __name__ == "__main__":
 
     parser = setup_parser()
     args = parser.parse_args()
+    if 'func' not in args:
+        parser.print_help()
+        raise SystemExit()
 
     try:
         logger.info("Starting attendance")
