@@ -1,8 +1,9 @@
 import logging
 import argparse
 import time
+from typing import Generator
 
-from .data_store import DataStore
+from .data_store import DataStore, CardUid
 from .json_store import JsonFileStore
 from .nfc import Nfc
 
@@ -31,52 +32,49 @@ def setup_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def mode_log_attendance(data_store: DataStore, nfc: Nfc) -> None:
-    logger.info("Begin logging attendance")
-
+def unique_card_generator(nfc: Nfc) -> Generator[CardUid, None, None]:
     try:
         last_cards = set()
         while True:
             curr_cards = nfc.poll_uids()
             diff_cards = curr_cards - last_cards
-            last_cards = last_cards + curr_cards
+            last_cards = last_cards & curr_cards
             for uid in diff_cards:
-                owner = data_store.find_person_by_card(uid)
-                if owner is None:
-                    logger.warning("No person found with card %x", uid)
-                else:
-                    owner.log_attendance()
-                    logger.info("Attendance logged for %s", owner.get_name())
+                yield uid
             time.sleep(0.5)
     except KeyboardInterrupt:
         logger.info("KeyboardInterrupt - exiting")
 
 
+def mode_log_attendance(data_store: DataStore, nfc: Nfc) -> None:
+    logger.info("Begin logging attendance")
+
+    for uid in unique_card_generator(nfc):
+        owner = data_store.find_person_by_card(uid)
+        if owner is None:
+            logger.warning("No person found with card %x", uid)
+        else:
+            owner.log_attendance()
+            logger.info("Attendance logged for %s", owner.get_name())
+
+
 def mode_register_people(data_store: DataStore, nfc: Nfc) -> None:
     logger.info("Begin registering people")
 
-    try:
-        last_cards = set()
-        while True:
-            curr_cards = nfc.poll_uids()
-            diff_cards = curr_cards - last_cards
-            last_cards = last_cards + curr_cards
-            for uid in diff_cards:
-                owner = data_store.find_person_by_card(uid)
-                if owner is not None:
-                    logger.warning("Person with card %x already exists: %s",
-                                   uid, owner.get_name())
-                else:
-                    logger.info("Registering new person for card %x", uid)
-                    name = input("Enter your name:")
-                    person = data_store.new_person(name)
-                    person.register_card(uid)
-                    person.log_attendance()
-                    logger.info(
-                        "Success - registered %s and logged attendance",
-                        name)
-    except KeyboardInterrupt:
-        logger.info("KeyboardInterrupt - exiting")
+    for uid in unique_card_generator(nfc):
+        owner = data_store.find_person_by_card(uid)
+        if owner is not None:
+            logger.warning("Person with card %x already exists: %s",
+                           uid, owner.get_name())
+        else:
+            logger.info("Registering new person for card %x", uid)
+            name = input("Enter your name:")
+            person = data_store.new_person(name)
+            person.register_card(uid)
+            person.log_attendance()
+            logger.info(
+                "Success - registered %s and logged attendance",
+                name)
 
 
 if __name__ == "__main__":
