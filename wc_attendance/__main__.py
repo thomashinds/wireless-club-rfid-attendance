@@ -18,13 +18,12 @@ if __name__ == "__main__":
     setup_logging()
     logger = logging.getLogger(__name__)
 
-    from .data_store import DataStore, Person
     from .json_store import JsonFileStore
 
     try:
         logger.info("Test")
-        store: DataStore = JsonFileStore()
-        p: Person = store.find_person_by_card(0x12345678)
+        store = JsonFileStore()
+        p = store.find_person_by_card(0x12345678)
         if p is None:
             p = store.new_person("John Smith")
             p.register_card(0x12345678)
