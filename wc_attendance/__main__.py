@@ -38,7 +38,7 @@ def unique_card_generator(nfc: Nfc) -> Generator[CardUid, None, None]:
         while True:
             curr_cards = nfc.poll_uids()
             diff_cards = curr_cards - last_cards
-            last_cards = last_cards & curr_cards
+            last_cards = (last_cards & curr_cards) | diff_cards
             for uid in diff_cards:
                 yield uid
             time.sleep(0.5)
