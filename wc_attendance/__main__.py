@@ -68,7 +68,7 @@ def mode_register_people(data_store: DataStore, nfc: Nfc) -> None:
                            uid, owner.get_name())
         else:
             logger.info("Registering new person for card %x", uid)
-            name = input("Enter your name:")
+            name = input("Enter your name: ")
             person = data_store.new_person(name)
             person.register_card(uid)
             person.log_attendance()

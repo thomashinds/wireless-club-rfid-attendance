@@ -85,10 +85,11 @@ class JsonPerson(Person):
     def log_attendance(self) -> None:
         time = self.parent._utc_now()
         attendance = self.json_obj['attendance']
-        last_time = attendance[len(attendance) - 1]
-        # Avoid spamming the logs with duplicate attendance
-        # Cooldown period of 4 hours
-        if time - last_time < 60 * 60 * 4:
-            return
+        if len(attendance) > 0:
+            last_time = attendance[len(attendance) - 1]
+            # Avoid spamming the logs with duplicate attendance
+            # Cooldown period of 4 hours
+            if time - last_time < 60 * 60 * 4:
+                return
         attendance.append(time)
         self.parent._save()
