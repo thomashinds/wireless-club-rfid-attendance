@@ -88,8 +88,8 @@ class JsonPerson(Person):
         if len(attendance) > 0:
             last_time = attendance[len(attendance) - 1]
             # Avoid spamming the logs with duplicate attendance
-            # Cooldown period of 4 hours
-            if time - last_time < 60 * 60 * 4:
+            # Cooldown period of 1 minute
+            if time - last_time < 60:
                 return
         attendance.append(time)
         self.parent._save()

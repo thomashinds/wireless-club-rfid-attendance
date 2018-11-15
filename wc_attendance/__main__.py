@@ -27,8 +27,6 @@ def setup_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(help="Attendance Modes")
     att = subparsers.add_parser("attendance", help="Log attendance")
     att.set_defaults(func=mode_log_attendance)
-    reg = subparsers.add_parser("register", help="Register new people")
-    reg.set_defaults(func=mode_register_people)
     return parser
 
 
@@ -52,21 +50,6 @@ def mode_log_attendance(data_store: DataStore, nfc: Nfc) -> None:
     for uid in unique_card_generator(nfc):
         owner = data_store.find_person_by_card(uid)
         if owner is None:
-            logger.warning("No person found with card %x", uid)
-        else:
-            owner.log_attendance()
-            logger.info("Attendance logged for %s", owner.get_name())
-
-
-def mode_register_people(data_store: DataStore, nfc: Nfc) -> None:
-    logger.info("Begin registering people")
-
-    for uid in unique_card_generator(nfc):
-        owner = data_store.find_person_by_card(uid)
-        if owner is not None:
-            logger.warning("Person with card %x already exists: %s",
-                           uid, owner.get_name())
-        else:
             logger.info("Registering new person for card %x", uid)
             name = input("Enter your name: ")
             person = data_store.new_person(name)
@@ -75,6 +58,9 @@ def mode_register_people(data_store: DataStore, nfc: Nfc) -> None:
             logger.info(
                 "Success - registered %s and logged attendance",
                 name)
+        else:
+            owner.log_attendance()
+            logger.info("Logged attendance for %s", owner.get_name())
 
 
 if __name__ == "__main__":
