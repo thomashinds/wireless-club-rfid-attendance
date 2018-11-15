@@ -90,6 +90,8 @@ class JsonPerson(Person):
             # Avoid spamming the logs with duplicate attendance
             # Cooldown period of 1 minute
             if time - last_time < 60:
+                logger.info("Not logging repeat attendance for %s", self.get_name())
                 return
+        logger.info("Logged attendance for %s", self.get_name())
         attendance.append(time)
         self.parent._save()

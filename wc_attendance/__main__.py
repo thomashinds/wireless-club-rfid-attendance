@@ -3,9 +3,17 @@ import argparse
 import time
 from typing import Generator
 
+from gpiozero import LED
+
 from .data_store import DataStore, CardUid
 from .json_store import JsonFileStore
 from .nfc import Nfc
+
+
+led_green = LED(23)
+led_yellow = LED(24)
+led_green.off()
+led_yellow.off()
 
 
 def setup_logging():
@@ -51,6 +59,7 @@ def mode_log_attendance(data_store: DataStore, nfc: Nfc) -> None:
         owner = data_store.find_person_by_card(uid)
         if owner is None:
             logger.info("Registering new person for card %x", uid)
+            led_yellow.on()
             name = input("Enter your name: ")
             person = data_store.new_person(name)
             person.register_card(uid)
@@ -58,9 +67,12 @@ def mode_log_attendance(data_store: DataStore, nfc: Nfc) -> None:
             logger.info(
                 "Success - registered %s and logged attendance",
                 name)
+            led_yellow.off()
         else:
             owner.log_attendance()
-            logger.info("Logged attendance for %s", owner.get_name())
+            led_green.on()
+            time.sleep(1)
+            led_green.off()
 
 
 if __name__ == "__main__":
