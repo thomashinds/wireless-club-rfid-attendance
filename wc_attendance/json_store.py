@@ -12,11 +12,11 @@ class JsonFileStore(DataStore):
     '''
     JSON-file-based data storage.
     '''
-    FILENAME = "attendance.json"
+    FILENAME = pathlib.Path.home() / "attendance.json"
 
     def __init__(self):
-        if pathlib.Path(JsonFileStore.FILENAME).is_file():
-            with open(JsonFileStore.FILENAME, 'r') as file:
+        if JsonFileStore.FILENAME.is_file():
+            with JsonFileStore.FILENAME.open('r') as file:
                 raw = json.loads(file.read())
                 self.people = {x['id']: JsonPerson(x, self) for x in raw}
         else:
@@ -90,7 +90,8 @@ class JsonPerson(Person):
             # Avoid spamming the logs with duplicate attendance
             # Cooldown period of 1 minute
             if time - last_time < 60:
-                logger.info("Not logging repeat attendance for %s", self.get_name())
+                logger.info("Not logging repeat attendance for %s",
+                            self.get_name())
                 return
         logger.info("Logged attendance for %s", self.get_name())
         attendance.append(time)
