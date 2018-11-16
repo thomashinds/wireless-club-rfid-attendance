@@ -9,12 +9,14 @@ setup(name='wc_attendance',
       license='Undecided',
       packages=['wc_attendance'],
       install_requires=[
-          'gpiozero'
+          'gpiozero',
+          'npyscreen'
       ],
       include_package_data=True,
       entry_points={
           'console_scripts': [
-              'wc-attendance=wc_attendance.run_attendance:main'
+              'wc-attendance=wc_attendance.run_attendance:main',
+              'wc-tui=wc_attendance.tui:main'
           ]
       },
       zip_safe=False)
