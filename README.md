@@ -5,7 +5,8 @@ RFID attendance tracking system for NEU Wireless Club.
 ## Install ##
 
 ```bash
-$ pip install -e .
+$ apt install libnfc libfreefare
+$ pip install --user -e .
 ```
 
 ## Usage ##
@@ -23,7 +24,7 @@ Data gets stored in `~/attendance.json`
 
 ## Development Usage ##
 
-For development/testing, run from source directory:
+For development/testing, run from repo directory:
 
 ```bash
 $ python3 -m wc_attendance
