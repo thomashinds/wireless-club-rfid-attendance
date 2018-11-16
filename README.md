@@ -1,20 +1,20 @@
 # Wireless Club RFID Attendance #
 
-Some description here.
+RFID attendance tracking system for NEU Wireless Club.
+
+## Install ##
+
+```bash
+$ pip install -e .
+```
 
 ## Usage ##
 
+Run attendance tracking:
+
+```bash
+$ wc-attendance
 ```
-usage: python3 -m wc_attendance [-h] {attendance,register} ...
 
-Wireless Club RFID Attendance
-
-positional arguments:
-  {attendance,register}
-                        Attendance Modes
-    attendance          Log attendance
-    register            Register new people
-
-optional arguments:
-  -h, --help            show this help message and exit
-```
+Yellow LED: New card detected, person must enter their name to be added to the system
+Green LED: Success, attendance was logged
