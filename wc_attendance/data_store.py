@@ -41,10 +41,13 @@ class Person:
     def set_name(self, name: str) -> None:
         raise NotImplementedError()
 
-    def register_card(self, card_id: CardUid) -> None:
+    def register_card(self, card_id: CardUid) -> bool:
         raise NotImplementedError()
 
-    def log_attendance(self) -> None:
+    def unregister_card(self, card_id: CardUid) -> bool:
+        raise NotImplementedError()
+
+    def log_attendance(self) -> bool:
         raise NotImplementedError()
 
     def __repr__(self) -> str:

@@ -77,12 +77,23 @@ class JsonPerson(Person):
         self.json_obj['name'] = name
         self.parent._save()
 
-    def register_card(self, card_id: CardUid) -> None:
+    def register_card(self, card_id: CardUid) -> bool:
+        if self.parent.find_person_by_card(card_id) is not None:
+            return False
         if card_id not in self.json_obj['cards']:
             self.json_obj['cards'].append(card_id)
             self.parent._save()
+            return True
+        return False
 
-    def log_attendance(self) -> None:
+    def unregister_card(self, card_id: CardUid) -> bool:
+        if card_id in self.json_obj['cards']:
+            self.json_obj['cards'].remove(card_id)
+            self.parent._save()
+            return True
+        return False
+
+    def log_attendance(self) -> bool:
         time = self.parent._utc_now()
         attendance = self.json_obj['attendance']
         if len(attendance) > 0:
@@ -92,7 +103,8 @@ class JsonPerson(Person):
             if time - last_time < 60:
                 logger.info("Not logging repeat attendance for %s",
                             self.get_name())
-                return
+                return False
         logger.info("Logged attendance for %s", self.get_name())
         attendance.append(time)
         self.parent._save()
+        return True
