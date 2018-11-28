@@ -6,7 +6,7 @@ RFID attendance tracking system for NEU Wireless Club.
 
 ```bash
 $ apt install libnfc libfreefare
-$ pip install --user -e .
+$ pip3 install --user -e .
 ```
 
 ## Usage ##
