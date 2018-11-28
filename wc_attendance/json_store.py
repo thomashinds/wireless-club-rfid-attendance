@@ -23,7 +23,7 @@ class JsonFileStore(DataStore):
             self.people = {}
 
     def _save(self):
-        with open(JsonFileStore.FILENAME, 'w') as file:
+        with JsonFileStore.FILENAME.open('w') as file:
             file.write(json.dumps([x.json_obj for x in self.people.values()]))
 
     def new_person(self, name: str) -> Person:
